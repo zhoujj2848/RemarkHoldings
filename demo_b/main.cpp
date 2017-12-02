@@ -16,6 +16,8 @@
 #include <stdlib.h>    
 
 #define msleep(x) usleep((x*1000))
+#define REMARK_OK   (0)
+#define REMARK_ERR  (-1)
 
 bool g_stop = false;
 bool g_printf = true;
@@ -37,14 +39,15 @@ void getRandStr(string &str,int len)
 	}
 }
 
-void sortStr(char *s)
+int sortStr(char *s)
 {
 	int i,j,k,l,t;
 	char old_str[13] = {0};
 
 	if(s == NULL)
 	{
-		return;
+		printf("sortStr func error,char *s is null\n");
+		return REMARK_ERR;
 	}
 
 	strcpy(old_str,s);
@@ -73,6 +76,8 @@ void sortStr(char *s)
 	{
 		printf("%s -> %s\n",old_str,s);
 	}
+
+	return REMARK_OK;
 
 }
 

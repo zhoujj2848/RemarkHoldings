@@ -37,69 +37,40 @@ class BlockQueue
             m_mutex = new pthread_mutex_t;  
             m_create_cond = new pthread_cond_t; 
 			m_process_cond = new pthread_cond_t;
-            pthread_mutex_init(m_mutex, NULL); 
 			
+            pthread_mutex_init(m_mutex, NULL); 
             pthread_cond_init(m_create_cond, NULL);  
 			pthread_cond_init(m_process_cond,NULL);
         }  
   
         ~BlockQueue()  
         {  
+
             pthread_mutex_lock(m_mutex);  
-            if(m_array != NULL)  
-                delete  m_array;  
+            if(m_array != NULL) 
+            {  
+				delete [] m_array;  
+			}
+              
             pthread_mutex_unlock(m_mutex); 
 
-			printf("delete 1\n");
   
             pthread_mutex_destroy(m_mutex);  
             pthread_cond_destroy(m_create_cond);  
 			pthread_cond_destroy(m_process_cond);  
 
-			printf("delete 2\n");
-  
             delete m_mutex;  
-            delete m_create_cond; 
+			m_mutex = NULL;
+			
+            delete m_create_cond;
+			m_create_cond = NULL;
+			
 			delete m_process_cond;
+			m_process_cond = NULL;
+			
 
-			printf("delete 3\n");
-        }  
-
-		void clear()  
-        {  
-            pthread_mutex_lock(m_mutex);  
-            m_size = 0;  
-            m_front = -1;  
-            m_back = -1;  
-            pthread_mutex_unlock(m_mutex);  
-        }  
+        }   
   
-        bool isFull()const  
-        {  
-        	bool full = false;
-
-            pthread_mutex_lock(m_mutex);  
-            if(m_size >= m_max_size)  
-            {  
-                full = true;
-            } 
-            pthread_mutex_unlock(m_mutex);  
-
-            return full;  
-        }  
-  
-        bool isEmpty()const  
-        {  
-        	bool empty =false;
-            pthread_mutex_lock(m_mutex);  
-            if(!m_size)  
-            {  
-               empty = true;
-            }  
-            pthread_mutex_unlock(m_mutex);  
-            return empty;  
-        }  
-          
         bool front(T& value)const  
         {  
             pthread_mutex_lock(m_mutex);  

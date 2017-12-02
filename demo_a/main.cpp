@@ -16,6 +16,8 @@
 #include <unistd.h>
 
 #define msleep(x) usleep((x*1000))
+#define REMARK_OK  (0)
+#define REMARK_ERR  (-1)
 
 BlockQueue<string> *g_queue = NULL; 
 bool g_stop = false;
@@ -36,14 +38,15 @@ void getRandStr(string &str,int number)
 	}
 }
 
-void sortStr(char *s)
+int sortStr(char *s)
 {
 	int i,j,k,l,t;
 	char old_str[13] = {0};
 
 	if(s == NULL)
 	{
-		return;
+		printf("sortStr func error,char *s is null\n");
+		return REMARK_ERR;
 	}
 
 	strcpy(old_str,s);
@@ -72,6 +75,8 @@ void sortStr(char *s)
 	{
 		printf("%s -> %s\n",old_str,s);     //printf 线程安全
 	}
+
+	return REMARK_OK;
 
 }
 
@@ -189,6 +194,9 @@ int main(int argc,char** argv)
 	pthread_join(t_c, NULL);/*等待进程t_c结束*/ 
 
 	printf("***************************************\ntime:%ds\nqueue size:%d\nprintf:%s\ncreate:%ld\nprocess:%ld\nper:%ld\n***************************************\n",run_time,queue_size,g_printf?"yes":"no",g_queue->m_create_count,g_queue->m_process_count,g_queue->m_process_count/run_time);
+
+	delete g_queue;
+	g_queue = NULL;
 
 	getchar();
     return 0;  
